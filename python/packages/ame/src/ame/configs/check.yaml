@@ -1,7 +1,7 @@
 
 PageLogger:
   level: DEBUG  # DEBUG, INFO, WARNING, ERROR, CRITICAL, or NONE.
-  path: ~/pagelogs/temp24
+  path: ~/pagelogs/temp25
 
 client:
   model: gpt-4o-2024-08-06  # gpt-4o-2024-05-13, gpt-4o-2024-08-06, o1-preview, o1, etc.
@@ -14,12 +14,12 @@ client:
   top_p: 1.0
   max_retries: 65535
   ClientWrapper:  # Provides record & replay functionality
-    enabled: 1  # Only works for SimpleAgent currently
+    enabled: 1  # Only works for AssistantAgent currently
     mode: check-replay  # pass-through, record, or check-replay
     session_name: short-3b
 
 Apprentice:
-  name_of_agent_or_team: SimpleAgent  # SimpleAgent, MagenticOneGroupChat, etc.
+  name_of_agent_or_team: AssistantAgent  # AssistantAgent or MagenticOneGroupChat
   disable_prefix_caching: 0  # If true, prepends a small random string to the context, to decorrelate repeated runs.
   TaskCentricMemoryController:
     max_train_trials: 2  # 2-10
