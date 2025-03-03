@@ -47,6 +47,12 @@ class ClientCreator:
                 # Wrap the client.
                 client = ClientWrapper(client, wrapper_config["mode"], wrapper_config["session_name"], self.logger)
 
+        # Check if the client should be wrapped.
+        if "ClientRecorder" in self.config:
+            wrapper_config = self.config["ClientRecorder"]
+            from autogen_ext.experimental.task_centric_memory.utils import ChatCompletionClientRecorder
+            client = ChatCompletionClientRecorder(client, wrapper_config["mode"], wrapper_config["session_filename"], self.logger)
+
         self.logger.leave_function()
         return client
 

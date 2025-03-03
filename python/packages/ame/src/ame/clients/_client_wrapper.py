@@ -9,7 +9,7 @@ from autogen_core.models import (
     RequestUsage,
 )
 from autogen_core.tools import Tool, ToolSchema
-from autogen_ext.task_centric_memory.utils import PageLogger
+from autogen_ext.experimental.task_centric_memory.utils import PageLogger
 from autogen_core.models import ChatCompletionClient
 
 
@@ -19,14 +19,14 @@ class ClientWrapper:
 
     Three modes are supported: pass-through, record, and check-replay.
 
-    1. In pass-through mode, the client simply passes messages to the base client and returns the responses.
+    1. In pass-through mode, the client recorder simply passes messages to the base client and returns the responses.
 
-    2. In record mode, the client also records both the messages and responses, saving them to disk.
+    2. In record mode, the client recorder also records both the messages and responses, saving them to disk.
 
-    3. In check-replay mode, the client does not call the base client at all.
+    3. In check-replay mode, the client recorder does not call the base client at all.
     Instead, it checks the messages against the recorded messages, in their recorded order.
-    If the messages match the recordings, the client returns the previously recorded responses.
-    If the messages do not match, the client raises an error.
+    If a message matches its recording, the previously recorded response is returned.
+    If a message does not match its recording, an error is raised.
 
     ReplayChatCompletionClient and ChatCompletionCache do similar things, but with significant differences:
     - ReplayChatCompletionClient replays pre-defined responses in a specified order
@@ -76,11 +76,19 @@ class ClientWrapper:
 
         if self.mode == "pass-through":
             response = await self.base_client.create(
-                messages, tools, json_output, extra_create_args, cancellation_token
+                messages=messages,
+                tools=tools,
+                json_output=json_output,
+                extra_create_args=extra_create_args,
+                cancellation_token=cancellation_token
             )
         elif self.mode == "record":
             response = await self.base_client.create(
-                messages, tools, json_output, extra_create_args, cancellation_token
+                messages=messages,
+                tools=tools,
+                json_output=json_output,
+                extra_create_args=extra_create_args,
+                cancellation_token=cancellation_token
             )
             self.record_one_turn(messages, response)
         elif self.mode == "check-replay":
@@ -175,9 +183,9 @@ class ClientWrapper:
         self.report_result("Total items = " + str(self.next_item_index))
         if self.mode == "record":
             self.save()
-            self.logger.error("\nRecorded session was saved to: " + self.path_to_output_file)
+            self.logger.info("\nRecorded session was saved to: " + self.path_to_output_file)
         elif self.mode == "check-replay":
-            self.logger.error("\nRecorded session was fully replayed and checked.")
+            self.logger.info("\nRecorded session was fully replayed and checked.")
         self.logger.leave_function()
 
     def save(self) -> None:

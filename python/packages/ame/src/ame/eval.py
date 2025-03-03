@@ -3,7 +3,7 @@ import importlib
 import sys
 import yaml
 
-from autogen_ext.task_centric_memory.utils import PageLogger, Apprentice
+from autogen_ext.experimental.task_centric_memory.utils import PageLogger, Apprentice
 from ame.clients._client_creator import ClientCreator
 
 
@@ -50,7 +50,6 @@ async def perform_evaluations(config, logger) -> None:
         # If this is a client wrapper, it needs to be finalized.
         client.finalize()
 
-    logger.flush(finished=True)
     logger.leave_function()
 
 
