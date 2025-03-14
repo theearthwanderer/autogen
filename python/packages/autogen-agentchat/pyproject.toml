@@ -15,7 +15,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "autogen-core==0.4.9",
+    "autogen-core @ git+https://github.com/theearthwanderer/autogen.git#subdirectory=python/packages/autogen-core",
 ]
 
 [tool.ruff]
